@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>لوحة الإدمن — Levant Pay</title>
+<style>
+  :root { --bg:#0b1220; --card:#111a2b; --muted:#a7b3c6; --text:#e6edf7; --good:#34d399; --bad:#ef4444; --accent:#3b82f6; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Kufi Arabic","Noto Sans",Arial;}
+  .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid #1e293b33;border-radius:16px;padding:18px 16px;box-shadow:0 1px 0 #00000022}
+  h1{font-size:20px;margin:0 0 14px}
+  .row{display:flex;gap:8px;align-items:center}
+  input[type=password],input[type=text]{flex:1;background:#0b1220;border:1px solid #32405566;border-radius:12px;padding:12px 14px;color:var(--text)}
+  button{background:var(--accent);border:0;border-radius:12px;padding:10px 14px;color:#fff;cursor:pointer}
+  button.secondary{background:#475569}
+  button.ghost{background:#334155}
+  .hint{color:var(--muted);font-size:13px}
+  .err{color:var(--bad)}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{padding:10px;border-bottom:1px solid #243047;vertical-align:top}
+  th{font-weight:600;text-align:right;color:#c7d2fe;white-space:nowrap}
+  tr:hover{background:#0f172a}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;flex-wrap:wrap}
+  .badge{font-size:12px;background:#243047;color:#cbd5e1;border-radius:999px;padding:4px 8px}
+  .actions{display:flex;gap:8px;align-items:center}
+</style>
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+</head>
+<body>
+<div class="wrap">
+  <div id="login" class="card">
+    <h1>تسجيل دخول الإدمن</h1>
+    <div class="row">
+      <input id="pw" type="password" placeholder="أدخل كلمة السر (ADMIN_PASSWORD)">
+      <button id="btnLogin">دخول</button>
+    </div>
+    <p id="msg" class="hint" aria-live="polite"></p>
+  </div>
+  <div id="app" class="card" style="display:none">
+    <div class="toolbar">
+      <h1 style="margin:0">الطلبات</h1>
+      <div class="actions">
+        <span id="count" class="badge">0 عنصر</span>
+        <button id="btnRefresh" class="secondary">تحديث</button>
+        <button id="btnLogout" class="ghost">خروج</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <input id="q" type="text" placeholder="ابحث: تتبّع / رقم / اسم / محفظة">
+      <button id="btnSearch" class="secondary">بحث</button>
+    </div>
+    <div id="tableWrap" style="margin-top:8px"></div>
+  </div>
+</div>
+<script>
+const ADMIN_API_BASE = 'https://script.google.com/macros/s/AKfycbwr1jVj3P8qwvjgUZlCyZUlFnL-yf4E3o8P9Zn71dT7IUQ5wyoc2edN-zHa9gjb9gOR/exec';
+
+
+const $ = (id) => document.getElementById(id);
+const S = { get adm(){ try{return sessionStorage.getItem('adm')||''}catch(_){return ''} },
+            set adm(v){ try{sessionStorage.setItem('adm',v)}catch(_){} },
+            clr(){ try{sessionStorage.removeItem('adm')}catch(_){} } };
+
+function setState(logged){ $('login').style.display = logged ? 'none':'block'; $('app').style.display = logged ? 'block':'none'; }
+
+async function login(){
+  $('msg').textContent = 'جارِ التحقق...';
+  try{
+    const r = await fetch(ADMIN_API_BASE + '?route=auth', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ password: $('pw').value.trim() })
+    });
+    const j = await r.json().catch(()=>({}));
+    if (j.ok){ S.adm='ok'; $('msg').textContent='تم ✔️'; setState(true); refresh(); }
+    else { $('msg').textContent='كلمة سر غير صحيحة'; }
+  }catch(e){ $('msg').textContent='خطأ: '+(e&&e.message||e); }
+}
+
+async function fetchOrders(){
+  const r = await fetch(ADMIN_API_BASE + '?route=orders&token=ok', { method:'GET' });
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const j = await r.json(); if(!j.ok) throw new Error(j.error||'failed');
+  return j.data || [];
+}
+
+function esc(s){ return (s+'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderTable(rows){
+  const q = $('q').value.trim().toLowerCase();
+  let data = rows;
+  if (q) data = data.filter(r => JSON.stringify(r).toLowerCase().includes(q));
+  $('count').textContent = data.length + ' عنصر';
+  if(!data.length){ $('tableWrap').innerHTML = '<p class="hint">لا توجد بيانات.</p>'; return; }
+  const cols = Array.from(new Set(['timestamp','tracking','name','phone','wallet','amount_usd','amount_syp','status','paid','paypal_order_id','paypal_capture_id', ...Object.keys(data[0]||{})]));
+  let h = '<div style="overflow:auto"><table><thead><tr>';
+  cols.forEach(k => h += '<th>'+esc(k)+'</th>');
+  h += '</tr></thead><tbody>';
+  data.forEach(r => { h += '<tr>'; cols.forEach(k => h += '<td>'+esc(String(r[k] ?? ''))+'</td>'); h += '</tr>'; });
+  h += '</tbody></table></div>';
+  $('tableWrap').innerHTML = h;
+}
+
+let cache = [];
+async function refresh(){
+  $('tableWrap').innerHTML = '<p class="hint">جارِ الجلب...</p>';
+  try{ cache = await fetchOrders(); renderTable(cache); }
+  catch(e){ $('tableWrap').innerHTML = '<p class="err">تعذّر جلب البيانات: '+esc(e&&e.message||String(e))+'</p>'; }
+}
+
+$('btnLogin').onclick = login;
+$('btnRefresh').onclick = refresh;
+$('btnLogout').onclick = () => { S.clr(); setState(false); };
+$('btnSearch').onclick = () => renderTable(cache);
+$('q').addEventListener('keydown', e => { if (e.key==='Enter') renderTable(cache); });
+
+// استرجاع جلسة سابقة
+setState(S.adm==='ok'); if (S.adm==='ok') refresh();
+</script>
+</body>
+</html>

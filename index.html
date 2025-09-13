@@ -1,0 +1,310 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LEVENT Pay — تحويل عبر PayPal واستلام محلي</title>
+  <meta name="description" content="حوّل عبر PayPal واستلم محليًا عبر ShamCash أو Syriatel Cash بسهولة وأمان.">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>(function(){var w=console.warn;console.warn=function(){if(arguments[0]&&arguments[0].toString().indexOf("cdn.tailwindcss.com should not be used in production")>-1)return;return w&&w.apply(this,arguments);};})();</script><!-- TAILWIND_WARN_FILTER -->
+<script src="https://cdn.tailwindcss.com"></script>
+  <script>window.CLOUD_BIN_ID="68b6c589d0ea881f406f37e9";</script>
+  <script src="assets/js/config-cloud-loader.js?v=1756813449"></script>
+  <style>
+    *{font-family:'Cairo',system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans Arabic',sans-serif}
+    .glass{background:linear-gradient(180deg,#0f172a,#0b1220);border:1px solid #1f2a44}
+  </style>
+<link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+  <link rel="stylesheet" href="assets/css/toasts.css">
+  <link rel="stylesheet" href="assets/css/live_toasts.css">
+  <script src="assets/js/cloud_config.js" defer></script>
+  <script src="assets/js/jsonbin_client.js" defer></script>
+  <script src="assets/js/jsonbin_safe_guard.js" defer></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="font-extrabold text-lg">LEVENT <span class="text-indigo-400">Pay</span></a>
+      <nav class="hidden md:flex items-center gap-5 text-sm">
+        <a href="#calc" class="hover:text-indigo-300">الحاسبة</a>
+        <a href="#rates" class="hover:text-indigo-300">أسعار المحافظات</a>
+        <a href="#steps" class="hover:text-indigo-300">الخطوات</a>
+        <a href="#testimonials" class="hover:text-indigo-300">الآراء</a>
+        <a href="#faq" class="hover:text-indigo-300">الأسئلة</a>
+      </nav><a href="https://wa.me/963954524542" target="_blank" class="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm font-bold">واتساب الدعم</a>
+      <div class="flex items-center gap-2">
+        <a href="shamcash.html" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm font-bold">حوّل الآن</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-indigo-950 via-slate-950 to-slate-950 pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-4 pt-10 pb-6 text-center">
+      <div class="inline-flex items-center gap-2 text-xs text-indigo-300/90 bg-indigo-950/40 border border-indigo-900 rounded-full px-3 py-1">
+        <span>🔒 أمان</span><span>•</span><span>⚡ دعم سريع</span>
+      </div>
+      <h1 class="mt-4 text-3xl sm:text-4xl font-extrabold">حوّل عبر PayPal <span class="text-indigo-400">واستلم محليًا</span></h1>
+      <p class="mt-3 text-slate-300 max-w-3xl mx-auto">اختر طريقة الاستلام المناسبة لك: ShamCash أو Syriatel Cash الحد الأدنى للتحويل <b>$10</b></p>
+      <div class="mt-5 flex flex-wrap gap-3 justify-center">
+        <a href="deposit.html" class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-bold">إيداع من الشام كاش للبايبال</a>
+        <div class="flex gap-2">
+          <a href="shamcash.html" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm">ShamCash</a>
+          <a href="syriatel.html" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm">Syriatel Cash</a>
+        </div>
+      </div>
+      <div class="mt-8 grid sm:grid-cols-3 gap-4 text-sm">
+        <div class="glass rounded-2xl p-4"><div class="font-bold">رسوم واضحة</div><div class="text-slate-400 mt-1">تظهر لك التكاليف النهائية قبل الدفع</div></div>
+        <div class="glass rounded-2xl p-4"><div class="font-bold">سعر صرف مُدار</div><div class="text-slate-400 mt-1">يتم تحديث السعر يوميا</div></div>
+        <div class="glass rounded-2xl p-4"><div class="font-bold">تتبّع الحالة</div><div class="text-slate-400 mt-1">رقم تتبّع وحالات: قيد الانتظار/تم التحويل</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <section id="calc" class="max-w-7xl mx-auto px-4 py-6">
+    <div class="glass rounded-2xl p-5">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h2 class="text-xl font-extrabold">احسب حوالتك</h2>
+        <div class="text-sm text-slate-300">الحد الأدنى: <b>$10</b></div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 mt-4">
+        <label class="block text-sm">المبلغ (USD)
+          <div class="mt-1 flex items-center gap-2">
+            <input id="amtUsd" type="number" step="0.01" min="1" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800" placeholder="0.00" oninput="recalcHome()">
+            <span class="px-2 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs">🇺🇸 USD</span>
+          </div>
+        </label>
+        <label class="block text-sm">سعر الصرف (ل.س / 1$)
+          <div class="mt-1 flex items-center gap-2">
+            <input id="fx" type="number" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400" disabled="">
+            <span class="px-2 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs">سعر الصرف اليوم</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-4 mt-4 text-sm">
+        <div class="glass rounded-xl p-4">
+          <div class="flex justify-between"><span>الرسوم عبر PayPal و البنك</span><strong id="feePaypal">—</strong></div>
+          <div class="flex justify-between mt-2"><span>رسوم المعاملة</span><strong id="feeSite">—</strong></div>
+          <div class="flex justify-between mt-2"><span>الصافي بالدولار</span><strong id="netUsd">—</strong></div>
+          <div class="flex justify-between mt-2"><span>الصافي بالليرة السورية</span><strong id="netSyp">—</strong></div>
+        </div>
+        <div class="rounded-xl p-4 bg-slate-900/50 border border-slate-800">
+          <div class="text-slate-300">اختر طريقة الاستلام:</div>
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <a href="shamcash.html" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-center font-bold">ShamCash</a>
+            <a href="syriatel.html" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-center font-bold border border-slate-700">Syriatel Cash</a>
+          </div>
+          <a href="deposit.html" class="mt-3 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold w-full">إيداع من الشام كاش للبايبال</a>
+        </div>
+        <div class="rounded-xl p-4 bg-slate-900/50 border border-slate-800">
+          <div class="text-slate-300">ملاحظات سريعة:</div>
+          <ul class="list-disc pr-5 mt-2 text-slate-400 space-y-1">
+            <li>الحد الأدنى للتحويل 10$</li>
+            <li>تظهر لك التكاليف النهائية قبل الدفع</li>
+            <li>يتم تحديث السعر يوميا</li>
+			 <li>يتم خصم عمولة البايبال و البنك</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rates per governorate -->
+  <section id="rates" class="max-w-7xl mx-auto px-4 py-6">
+    <div class="glass rounded-2xl p-5">
+      <h2 class="text-xl font-extrabold">أسعار الصرف للحوالات — المحافظات</h2>
+      <div class="overflow-x-auto mt-4">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-slate-300">
+              <th class="text-right p-2 border-b border-slate-800">المحافظة</th>
+              <th class="text-right p-2 border-b border-slate-800">سعر الحوالات (ل.س/1$)</th>
+            </tr>
+          </thead>
+          <tbody id="tblRates"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section id="steps" class="max-w-7xl mx-auto px-4 py-6">
+    <div class="glass rounded-2xl p-5">
+      <h2 class="text-xl font-extrabold">خطوات لتصل حوالتك بسرعة وأمان</h2>
+      <ol class="mt-4 grid sm:grid-cols-2 gap-4 text-sm">
+        <li class="rounded-xl p-4 bg-slate-900/50 border border-slate-800"><b>1) أدخل المبلغ</b><br>نحسب لك الرسوم والصافي تلقائيًا</li>
+        <li class="rounded-xl p-4 bg-slate-900/50 border border-slate-800"><b>2) ادفع عبر PayPal</b><br>نسجّل الطلب كـ <span class="px-2 py-0.5 rounded-full text-yellow-300 bg-yellow-500/10 border border-yellow-500/10">قيد الانتظار</span>.</li>
+        <li class="rounded-xl p-4 bg-slate-900/50 border border-slate-800"><b>3) مراجعة سريعة</b><br>نحوّل الصافي عبر طريقة الاستلام التي اخترتها</li>
+        <li class="rounded-xl p-4 bg-slate-900/50 border border-slate-800"><b>4) تأكيد الاستلام</b><br>تُحدّث الحالة إلى <span class="px-2 py-0.5 rounded-full text-emerald-300 bg-emerald-500/10 border border-emerald-500/10">تم التحويل</span>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Testimonials with stars -->
+  <section id="testimonials" class="max-w-7xl mx-auto px-4 py-6">
+    <div class="glass rounded-2xl p-5">
+      <h2 class="text-xl font-extrabold">ماذا يقول العملاء عن ليفنت باي</h2>
+      <div id="testiWrap" class="mt-4 grid lg:grid-cols-3 sm:grid-cols-2 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="max-w-7xl mx-auto px-4 py-10">
+    <div class="glass rounded-2xl p-5">
+      <h2 class="text-xl font-extrabold">الأسئلة الشائعة</h2>
+      <details class="mt-3 rounded-xl p-3 bg-slate-900/50 border border-slate-800"><summary class="font-bold cursor-pointer">ما هو الحد الأدنى للتحويل؟</summary><div class="mt-2 text-slate-300">الحد الأدنى 10$ ويمكن للأدمن تغييره لاحقًا.</div></details>
+      <details class="mt-3 rounded-xl p-3 bg-slate-900/50 border border-slate-800"><summary class="font-bold cursor-pointer">كم تستغرق عملية التحويل؟</summary><div class="mt-2 text-slate-300">عادة بين ساعة و24 ساعة حسب الضغط وطريقة الاستلام.</div></details>
+      <details class="mt-3 rounded-xl p-3 bg-slate-900/50 border border-slate-800"><summary class="font-bold cursor-pointer">هل هناك عمولات خفية؟</summary><div class="mt-2 text-slate-300">لا. تظهر الرسوم والصافي قبل الدفع بوضوح.</div></details>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 py-6 text-center text-sm text-slate-400">
+    <div class="max-w-7xl mx-auto px-4">© LEVENT Pay — جميع الحقوق محفوظة</div>
+  </footer>
+
+  <!-- Logic -->
+  <script>
+  (function(){
+    const DB={get(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+    const KEY={settings:'PX_SETTINGS',rates:'PX_GOV_RATES',testi:'PX_TESTIMONIALS'};
+
+    // Seed defaults (admin-managed)
+    (function seed(){
+      const s = DB.get(KEY.settings,null);
+      if(!s){ DB.set(KEY.settings,{ fx:10600, min:10, ppp:4.4, ppf:0.5, site:3 }); }
+      if(!DB.get(KEY.rates,null)){
+        const fx = (DB.get(KEY.settings,{}).fx)||10600;
+        DB.set(KEY.rates,[
+          {gov:'دمشق',rate:fx},{gov:'ريف دمشق',rate:fx},{gov:'حلب',rate:fx},{gov:'حمص',rate:fx},{gov:'حماة',rate:fx},
+          {gov:'اللاذقية',rate:fx},{gov:'طرطوس',rate:fx},{gov:'إدلب',rate:fx},{gov:'درعا',rate:fx},{gov:'السويداء',rate:fx},
+          {gov:'دير الزور',rate:fx},{gov:'الرقة',rate:fx},{gov:'الحسكة',rate:fx},{gov:'القنيطرة',rate:fx}
+        ]);
+      }
+    })();
+
+    const $ = (s)=>document.querySelector(s);
+
+    function recalcHome(){
+      const s = DB.get(KEY.settings,{});
+      const amt = Number($('#amtUsd')?.value||0);
+      const fx  = Number($('#fx')?.value||s.fx||10600);
+      const ppFee = +(amt*(s.ppp||0)/100 + (s.ppf||0)).toFixed(2);   // 4.4% + 0.5$ (لا نعرض النسب)
+      const siteFee = +((amt-ppFee)*(s.site||0)/100).toFixed(2);      // عمولة المنصة
+      const netUsd = +(amt-ppFee-siteFee).toFixed(2);
+      const netSyp = +(netUsd*(fx||0)).toFixed(0);
+      $('#feePaypal').textContent = ppFee.toFixed(2) + '$';
+      $('#feeSite').textContent = siteFee.toFixed(2) + '$';
+      $('#netUsd').textContent = netUsd.toFixed(2) + '$';
+      $('#netSyp').textContent = (netSyp||0).toLocaleString() + ' ل.س';
+    }
+    window.recalcHome = recalcHome;
+
+    function fillRates(){
+      const s  = DB.get(KEY.settings,{});
+      const fx = Number(s.fx||10600);
+      const tb = $('#tblRates'); if(!tb) return;
+      const list = (DB.get(KEY.rates,[])||[]);
+      // Force show admin FX across all rows (واجهة فقط)
+      tb.innerHTML = list.map(r=>`<tr>
+        <td class="p-2 border-b border-slate-800">${r.gov}</td>
+        <td class="p-2 border-b border-slate-800">${fx.toLocaleString()} ل.س</td>
+      </tr>`).join('');
+      // Lock field
+      const fxInput = $('#fx'); if(fxInput){ fxInput.value = fx; fxInput.setAttribute('disabled','disabled'); }
+    }
+
+    function fillTesti(){
+      const wrap = $('#testiWrap'); if(!wrap) return;
+      const list = DB.get(KEY.testi,[]);
+      const star = (n)=>'<span class="text-amber-400">★</span>'.repeat(n) + '<span class="text-slate-600">★</span>'.repeat(5-n);
+      if(!list || list.length===0){
+        wrap.innerHTML = `
+          <div class="rounded-2xl p-4 bg-slate-900/50 border border-slate-800"><div>${star(5)}</div><div class="mt-2">“تحويل سريع وموثوق — وصلت الحوالة خلال ساعات.”</div><div class="text-slate-400 mt-1">— حسام، دمشق</div></div>
+          <div class="rounded-2xl p-4 bg-slate-900/50 border border-slate-800"><div>${star(4)}</div><div class="mt-2">“واجهة عربية واضحة وخدمة عملاء ممتازة.”</div><div class="text-slate-400 mt-1">— مروة، حلب</div></div>
+          <div class="rounded-2xl p-4 bg-slate-900/50 border border-slate-800 hidden lg:block"><div>${star(5)}</div><div class="mt-2">“خدمة زبائن سريعة جداً.”</div><div class="text-slate-400 mt-1">— سامر، حمص</div></div>
+        `;
+      } else {
+        wrap.innerHTML = list.map(t=>`
+          <div class="rounded-2xl p-4 bg-slate-900/50 border border-slate-800">
+            <div>${star(Number(t.stars||5))}</div>
+            <div class="mt-2">“${(t.text||'').replace(/</g,'&lt;')}”</div>
+            <div class="text-slate-400 mt-1">— ${(t.name||'مجهول').replace(/</g,'&lt;')}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    
+    // === Robust calculator (v5 zero/empty safe) ===
+    window.recalcHome = function(){
+      const DBget=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+      const s = DBget('PX_SETTINGS',{ fx:10600, min:10, ppp:4.4, ppf:0.5, site:3 });
+      const amtEl = document.getElementById('amtUsd');
+      let amt = Number(amtEl && amtEl.value ? amtEl.value : 0);
+      if(!Number.isFinite(amt) || amt <= 0){ amt = 0; }
+
+      const fx = Number(s.fx||10600);
+      const ppFee  = amt>0 ? +(amt*(s.ppp||4.4)/100 + (s.ppf||0.5)).toFixed(2) : 0;
+      const siteFee= amt>0 ? +((amt-ppFee)*(s.site||3)/100).toFixed(2) : 0;
+      const netUsd = amt>0 ? +(amt-ppFee-siteFee).toFixed(2) : 0;
+      const netSyp = amt>0 ? +(netUsd*fx).toFixed(0) : 0;
+
+      const put = (id, val, isSYP=false)=>{
+        const el=document.getElementById(id); if(!el) return;
+        if(amt<=0){ el.textContent='—'; return; }
+        el.textContent = isSYP ? (Number(val||0).toLocaleString()+' ل.س') : (Number(val||0).toFixed(2)+'$');
+      };
+      put('feePaypal', ppFee);
+      put('feeSite',  siteFee);
+      put('netUsd',   netUsd);
+      put('netSyp',   netSyp, true);
+
+      const fxInput=document.getElementById('fx');
+      if(fxInput){ fxInput.value = fx; fxInput.setAttribute('disabled','disabled'); }
+
+      // Optional: disable CTAs if exist
+      const min = Number(s.min||10);
+      const ids=['ctaStart','btnSham','btnSyr','ctaStart2'];
+      ids.forEach(id=>{
+        const el=document.getElementById(id); if(!el) return;
+        const ok = amt>=min;
+        el.classList.toggle('opacity-50', !ok);
+        el.classList.toggle('pointer-events-none', !ok);
+        el.classList.toggle('cursor-not-allowed', !ok);
+        el.setAttribute('aria-disabled', ok?'false':'true');
+      });
+      const warn=document.getElementById('warn');
+      if(warn){ warn.classList.toggle('hidden', !(amt>0 && amt<min)); }
+    };
+document.addEventListener('DOMContentLoaded',()=>{
+      fillRates(); recalcHome(); fillTesti();
+    });
+  })();
+  </script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js");}</script>
+<div id="paypal-buttons" style="margin:12px 0"></div>
+<script></script>
+
+
+
+<!-- سر URL: افتح https://YOUR-DOMAIN/?levadm=LEVANT2025 لفتح لوحة الإدمن -->
+<script>
+(function(){
+  try {
+    var q = new URLSearchParams(location.search);
+    var s = (q.get('levadm')||'').toUpperCase();
+    if (s === 'LEVANT2025') {
+      window.location.replace('https://script.google.com/macros/s/AKfycbwr1jVj3P8qwvjgUZlCyZUlFnL-yf4E3o8P9Zn71dT7IUQ5wyoc2edN-zHa9gjb9gOR/exec');
+    }
+  } catch(_){}
+})();
+</script>
+
+<script>window.addEventListener('lev-config-updated',()=>{try{if(typeof recalcHome==='function') recalcHome();}catch(e){};try{if(typeof fillRates==='function') fillRates();}catch(e){}});</script>
+  <script src="assets/js/toasts.js" defer></script>
+  <script src="assets/js/live_toasts.js" defer></script>
+</body></html>

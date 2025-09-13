@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:'Cairo',sans-serif}</style><title>لوحة الإدارة — LEVANT Pay OPS</title><link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+</head>
+<body class="bg-slate-950 text-white">
+<header class="border-b border-white/10 bg-slate-950/70 backdrop-blur">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <h1 class="text-xl font-extrabold">LEVANT <span class="text-indigo-400">Pay</span> — لوحة الإدارة</h1>
+    <button id="logout" class="px-3 py-2 rounded-xl bg-white/10 border border-white/10">خروج</button>
+  </div>
+</header>
+<main class="max-w-6xl mx-auto p-6">
+  <nav class="flex gap-2 text-sm">
+    <a href="/" class="px-4 py-2 rounded-xl bg-white/10">رجوع للموقع</a>
+    <button id="chkApi" class="px-4 py-2 rounded-xl bg-white/10">API</button>
+    <button id="chkAuth" class="px-4 py-2 rounded-xl bg-white/10">Auth</button>
+    <button id="chkTg" class="px-4 py-2 rounded-xl bg-white/10">Telegram</button>
+  </nav>
+  <pre id="out" class="mt-3 text-xs text-slate-300 whitespace-pre-wrap"></pre>
+
+<section class="mt-6 rounded-2xl p-4 bg-black/40 border border-white/10">
+  <h2 class="text-lg font-bold">أسعار الصرف — المحافظات</h2>
+  <div id="ratesBox" class="mt-3"></div>
+  <div class="mt-3 flex gap-3">
+    <button id="saveRates" class="px-4 py-2 rounded-xl bg-indigo-600">حفظ الأسعار</button>
+    <span class="text-slate-400 text-sm">تُعرض في الصفحة الرئيسية ضمن "أسعار الصرف للحوالات لكل المحافظات".</span>
+  </div>
+</section>
+
+<section class="mt-6 rounded-2xl p-4 bg-black/40 border border-white/10">
+  <h2 class="text-lg font-bold">التقييمات (شهادات العملاء)</h2>
+  <div id="testiBox" class="mt-3"></div>
+  <div class="mt-3 flex gap-3">
+    <button id="addTesti" class="px-4 py-2 rounded-xl bg-white/10">إضافة شهادة</button>
+    <button id="saveTesti" class="px-4 py-2 rounded-xl bg-indigo-600">حفظ</button>
+  </div>
+</section>
+
+</main>
+<script>
+(async ()=>{ const t=localStorage.getItem('lp_admin_token')||''; if(!t){ location.href='login.html'; return; }
+  try{ const r=await fetch('/.netlify/functions/auth/verify',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+t}}); const j=await r.json(); if(!j||!j.ok){ localStorage.removeItem('lp_admin_token'); location.href='login.html'; return; } }catch(_){ localStorage.removeItem('lp_admin_token'); location.href='login.html'; return; }
+})();
+const out=document.getElementById('out');
+document.getElementById('chkApi').onclick=async()=>{ try{ const r=await fetch('/api/env/public',{method:'POST'}); out.textContent='API OK\n'+await r.text(); }catch(e){ out.textContent='API ERR: '+e; } };
+document.getElementById('chkAuth').onclick=async()=>{ try{ const r=await fetch('/.netlify/functions/auth/verify',{method:'POST',headers:{'Authorization':'Bearer '+(localStorage.getItem('lp_admin_token')||'')}}); out.textContent='AUTH '+r.status+'\n'+await r.text(); }catch(e){ out.textContent='AUTH ERR: '+e; } };
+document.getElementById('chkTg').onclick=async()=>{ out.textContent='TG: يتم الإرسال تلقائيًا عند أوامر البنك/أكواد شام كاش.'; };
+document.getElementById('logout').onclick=()=>{ localStorage.removeItem('lp_admin_token'); location.href='login.html'; };
+</script>
+<script>
+(function(){
+  const DB={get(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+  const KEY={rates:'PX_GOV_RATES', testi:'PX_TESTIMONIALS'};
+  const GOVS=['دمشق','ريف دمشق','حلب','حمص','حماة','اللاذقية','طرطوس','إدلب','درعا','السويداء','دير الزور','الرقة','الحسكة'];
+
+  function renderRates(){
+    const list = DB.get(KEY.rates,[]) || GOVS.map(g=>({gov:g, rate:0}));
+    const box = document.getElementById('ratesBox');
+    box.innerHTML = '<div class="grid md:grid-cols-3 gap-3">'+ list.map((r,i)=>`
+      <label class="block text-sm">${r.gov}
+        <input data-idx="${i}" value="${Number(r.rate||0)}" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10"/>
+      </label>
+    `).join('') + '</div>';
+  }
+  function saveRates(){
+    const inputs = Array.from(document.querySelectorAll('#ratesBox input'));
+    const list = inputs.map(inp=>({gov: inp.parentElement.firstChild.textContent.trim(), rate: Number(inp.value||0)}));
+    DB.set(KEY.rates, list);
+    alert('تم حفظ أسعار المحافظات');
+  }
+
+  function renderTesti(){
+    const list = DB.get(KEY.testi,[]) || [{name:'حسام — دمشق', text:'تحويل سريع وموثوق — وصلت الحوالة خلال ساعات.'},{name:'مروة — حلب', text:'واجهة عربية واضحة وخدمة عملاء ممتازة.'}];
+    const box = document.getElementById('testiBox');
+    box.innerHTML = list.map((t,i)=>`
+      <div class="rounded-xl p-3 bg-slate-900/50 border border-white/10 mb-2">
+        <div class="grid md:grid-cols-2 gap-3">
+          <label class="block text-sm">الاسم/العنوان
+            <input data-ti="${i}" data-k="name" value="${t.name||''}" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10"/>
+          </label>
+          <label class="block text-sm">النص
+            <input data-ti="${i}" data-k="text" value="${t.text||''}" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10"/>
+          </label>
+        </div>
+        <div class="mt-2"><button data-del="${i}" class="px-3 py-1 rounded-xl bg-white/10">حذف</button></div>
+      </div>
+    `).join('');
+  }
+  function saveTesti(){
+    const list=[];
+    document.querySelectorAll('#testiBox [data-ti]').forEach(inp=>{
+      const i=Number(inp.getAttribute('data-ti')), k=inp.getAttribute('data-k');
+      list[i] = list[i] || {name:'', text:''}; list[i][k]=inp.value;
+    });
+    DB.set(KEY.testi, list.filter(Boolean));
+    alert('تم حفظ التقييمات');
+  }
+  function addTesti(){
+    const list = DB.get(KEY.testi,[]) || [];
+    list.push({name:'',text:''}); DB.set(KEY.testi,list); renderTesti();
+  }
+
+  document.addEventListener('click', e=>{
+    if(e.target.id==='saveRates') saveRates();
+    if(e.target.id==='saveTesti') saveTesti();
+    if(e.target.id==='addTesti') addTesti();
+    if(e.target.hasAttribute('data-del')){
+      const i = Number(e.target.getAttribute('data-del'));
+      const list = DB.get(KEY.testi,[]) || []; list.splice(i,1); DB.set(KEY.testi,list); renderTesti();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', ()=>{ renderRates(); renderTesti(); });
+})();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js");}</script>
+<div id="paypal-buttons" style="margin:12px 0"></div>
+<script></script>
+
+</body></html>

@@ -1,0 +1,1 @@
+exports.handler = async function(event, context){ return { statusCode: 204 }; }; // PayPal removed

@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LEVANT Pay — عمليات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:'Cairo',sans-serif}</style>
+<link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+</head>
+<body class="bg-slate-950 text-white">
+<main class="max-w-3xl mx-auto p-6">
+  <h1 class="text-2xl font-extrabold">إعدادات العمليات</h1>
+  <div class="mt-4 rounded-2xl p-5 bg-white/5 border border-white/10">
+    <h3 class="font-bold mb-2">تهيئة Webhook بوت تيليجرام</h3>
+    <p class="text-sm text-slate-300">اضغط الزر ليتم تعيين الويب هوك تلقائيًا على نطاق الموقع الحالي.</p>
+    <button id="b" class="mt-2 px-4 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-bold">تعيين Webhook الآن</button>
+    <pre id="o" class="mt-3 text-xs text-slate-300 bg-black/40 p-3 rounded-xl overflow-x-auto"></pre>
+  </div>
+</main>
+<script>
+function run(){ 
+  const out = document.getElementById('o');
+  if(location.protocol === 'file:'){ 
+    out.textContent = 'لا يمكن تعيين Webhook عند فتح الملفات محليًا (file://). انشر الموقع على Netlify أو شغّل خادم محلي.'; 
+    b.disabled = true; b.classList.add('opacity-60','cursor-not-allowed'); 
+    return;
+  }
+  b.onclick = async () => {
+    out.textContent = 'جارٍ التعيين...';
+    try{
+      const url = location.origin + '/.netlify/functions/bot/webhook';
+      const r = await fetch('/.netlify/functions/bot/setWebhook', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({url})});
+      const j = await r.json();
+      out.textContent = JSON.stringify(j, null, 2);
+    }catch(e){ out.textContent = 'خطأ الشبكة: ' + e.message; }
+  };
+}
+run();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js");}</script>
+<div id="paypal-buttons" style="margin:12px 0"></div>
+<script></script>
+
+</body></html>

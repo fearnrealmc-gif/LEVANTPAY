@@ -1,0 +1,165 @@
+/* LEVENT Pay — Animations Lite (Pure CSS, Non-destructive) */
+:root{
+  --lev-ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* Page fade-in on load */
+@media (prefers-reduced-motion: no-preference){
+  body{ animation: lev-fade-in .45s var(--lev-ease) both; }
+  @keyframes lev-fade-in{ from{ opacity:0 } to{ opacity:1 } }
+}
+
+/* Buttons, CTAs, and tappable controls */
+button,
+a[href].btn,
+a[href][class*="rounded"],
+#btnSend {
+  transition: transform .18s var(--lev-ease), box-shadow .22s var(--lev-ease), opacity .18s var(--lev-ease);
+  will-change: transform, box-shadow;
+}
+
+@media (hover: hover) and (pointer: fine){
+  button:hover,
+  a[href].btn:hover,
+  a[href][class*="rounded"]:hover,
+  #btnSend:hover{
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 10px 24px rgba(16,185,129,.22);
+  }
+}
+
+button:active,
+a[href].btn:active,
+a[href][class*="rounded"]:active,
+#btnSend:active{
+  transform: translateY(0) scale(.985);
+  box-shadow: 0 4px 12px rgba(15,23,42,.24);
+}
+
+/* Focus visibility for keyboard users */
+button:focus-visible,
+a[href]:focus-visible,
+#btnSend:focus-visible{
+  outline: 2px solid rgba(99,102,241,.85);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* Subtle card lift for glass sections if present */
+[class*="glass"]{
+  transition: transform .25s var(--lev-ease), box-shadow .25s var(--lev-ease);
+}
+@media (hover: hover) and (pointer: fine){
+  [class*="glass"]:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(2,6,23,.35);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+
+/* === Apply effects to ALL buttons & button-like links (safe, pure CSS) === */
+:root{ --lev-ease: cubic-bezier(.22,.61,.36,1) }
+
+/* Target broad set of button-like elements */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+a.button,
+a.btn,
+a[href][class*="btn"],
+a[href][class*="rounded"],
+#btnSend {
+  transition: transform .18s var(--lev-ease), box-shadow .22s var(--lev-ease), opacity .18s var(--lev-ease);
+  will-change: transform, box-shadow;
+}
+
+/* Hover (only when not disabled) */
+@media (hover: hover) and (pointer: fine){
+  button:not(:disabled):not([aria-disabled="true"]):not(.pointer-events-none):hover,
+  [role="button"]:not([aria-disabled="true"]):not(.pointer-events-none):hover,
+  input[type="button"]:not(:disabled):hover,
+  input[type="submit"]:not(:disabled):hover,
+  a.button:hover,
+  a.btn:hover,
+  a[href][class*="btn"]:hover,
+  a[href][class*="rounded"]:hover,
+  #btnSend:not([aria-disabled="true"]):not(.pointer-events-none):hover{
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 10px 24px rgba(16,185,129,.22);
+  }
+}
+
+/* Active/press */
+button:not(:disabled):not([aria-disabled="true"]):not(.pointer-events-none):active,
+[role="button"]:not([aria-disabled="true"]):not(.pointer-events-none):active,
+input[type="button"]:not(:disabled):active,
+input[type="submit"]:not(:disabled):active,
+a.button:active,
+a.btn:active,
+a[href][class*="btn"]:active,
+a[href][class*="rounded"]:active,
+#btnSend:not([aria-disabled="true"]):not(.pointer-events-none):active{
+  transform: translateY(0) scale(.985);
+  box-shadow: 0 4px 12px rgba(15,23,42,.24);
+}
+
+/* Centered ripple-like flash (pure CSS) */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+a.button,
+a.btn,
+a[href][class*="btn"],
+a[href][class*="rounded"],
+#btnSend {
+  position: relative;
+  overflow: hidden;
+}
+button:not(:disabled):not([aria-disabled="true"]):not(.pointer-events-none):active::after,
+[role="button"]:not([aria-disabled="true"]):not(.pointer-events-none):active::after,
+input[type="button"]:not(:disabled):active::after,
+input[type="submit"]:not(:disabled):active::after,
+a.button:active::after,
+a.btn:active::after,
+a[href][class*="btn"]:active::after,
+a[href][class*="rounded"]:active::after,
+#btnSend:not([aria-disabled="true"]):not(.pointer-events-none):active::after{
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width:12px; height:12px; border-radius:999px;
+  transform: translate(-50%,-50%) scale(0);
+  background: radial-gradient(circle, rgba(255,255,255,.5), transparent 60%);
+  animation: lev-ripple-center .55s ease-out forwards;
+  pointer-events:none;
+}
+@keyframes lev-ripple-center{
+  to{ transform: translate(-50%,-50%) scale(16); opacity: 0; }
+}
+
+/* Keyboard focus ring */
+button:focus-visible,
+[role="button"]:focus-visible,
+input[type="button"]:focus-visible,
+input[type="submit"]:focus-visible,
+a.button:focus-visible,
+a.btn:focus-visible,
+a[href][class*="btn"]:focus-visible,
+a[href][class*="rounded"]:focus-visible,
+#btnSend:focus-visible{
+  outline: 2px solid rgba(99,102,241,.85);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LEVENT Pay — Syriatel Cash</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    *{font-family:'Cairo',ui-sans-serif,system-ui}
+    html{color-scheme:dark} body{background:#0f172a;color:#e5e7eb}
+    .glass{background:rgba(15,23,42,.65);backdrop-filter:blur(10px);border:1px solid rgba(148,163,184,.25)}
+  </style>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+  <link rel="stylesheet" href="assets/css/toasts.css">
+  <link rel="stylesheet" href="assets/css/live_toasts.css">
+  <script src="assets/js/cloud_config.js" defer></script>
+  <script src="assets/js/jsonbin_client.js" defer></script>
+  <script src="assets/js/jsonbin_safe_guard.js" defer></script>
+  <link rel="stylesheet" href="assets/css/confirm_modal.css">
+</head>
+<body>
+<header class="sticky top-0 z-50 backdrop-blur border-b border-slate-800/60 bg-[#0f172a]/80">
+  <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+    <a href="index.html" class="font-extrabold">LEVENT <span class="text-indigo-400">Pay</span></a>
+    <nav class="text-sm"><a href="index.html" class="hover:text-indigo-300">الرئيسية</a></nav>
+  </div>
+</header>
+<div class="bg-amber-500/10 border-y border-amber-300/20">
+  <div class="max-w-5xl mx-auto px-4 py-2 text-sm text-amber-200">
+    تحتاج مساعدة؟ <a href="https://t.me/levant01" target="_blank" class="underline hover:text-amber-100">تواصل مع الدعم</a>
+  </div>
+</div>
+
+<section class="max-w-5xl mx-auto px-4 py-6">
+  <div class="glass rounded-2xl p-5">
+    <h1 class="text-xl font-extrabold mb-1">استلام Syriatel Cash — بعد الدفع عبر PayPal (تحويل يدوي)</h1>
+    <p class="text-slate-300 text-sm">حوّل يدويًا إلى إيميل PayPal الموضح بالأعلى ثم أرسل البيانات والمرفقات المطلوبة.</p>
+
+    <div class="mt-3 bg-slate-900/60 border border-slate-800 rounded-xl p-3">
+      <div class="text-sm">يرجى إرسال المبلغ إلى إيميل PayPal التالي:</div>
+      <div class="mt-1 flex items-center gap-2">
+        <code id="ppEmail" class="px-2 py-1 rounded bg-slate-800 select-all">hassnhms91@gmail.com</code>
+        <button type="button" class="text-xs px-2 py-1 rounded bg-indigo-600 hover:bg-indigo-500" data-copy-from="ppEmail">نسخ</button>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-3 mt-4">
+      <label class="block text-sm">المبلغ المُحوّل (ل.س)
+        <input id="stAmount" type="number" step="1" min="1" max="500000" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800" placeholder="حتى 500,000 ل.س" required>
+      </label>
+      <label class="block text-sm">الاسم الثلاثي
+        <input id="stFullName" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800" placeholder="الاسم الثلاثي" required>
+      </label>
+      <label class="block text-sm">رقم الجوال (سيرياتيل)
+        <input id="stPhone" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800" placeholder="09XXXXXXXX" required>
+      </label>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-3 mt-4">
+      <label class="block text-sm">صورة QR (إجباري)
+        <input id="stQR" type="file" accept="image/*" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800" required>
+      </label>
+      <label class="block text-sm">إيصال الدفع (إجباري)
+        <input id="stInvoice" type="file" accept="image/*,.pdf" class="mt-1 w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800" required>
+      </label>
+    </div>
+
+    <div class="mt-5 rounded-xl p-4 bg-slate-900/50 border border-slate-800">
+      <div class="text-sm text-slate-300 mb-2">تأكيد الإرسال:</div>
+      <div class="mt-4">
+        <button id="btnSend" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-semibold opacity-50 pointer-events-none" aria-disabled="true">إرسال الطلب</button>
+        <span id="hintPay" class="text-xs text-slate-400 ml-2">أكمل البيانات وأرفق الصور للمتابعة.</span>
+        <div id="errBox" class="mt-2 text-xs text-rose-300"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="https://wa.me/963954524542" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500">
+      خدمة العملاء عبر واتساب: 963 954 524 542
+    </a>
+  </div>
+</section>
+
+<script>
+var TG_TOKEN = '8326305862:AAErHMprXxX11TnMt13clfdmyxuxllB45Jc';
+var TG_CHAT  = '8075339497';
+
+function q(id){ return document.getElementById(id); }
+function copyTextFrom(id){ try{ var el=q(id); var v=(el&&((el.value&&el.value)||el.textContent))||''; navigator.clipboard && navigator.clipboard.writeText(v); }catch(_ ){} }
+
+function tgSendMessage(text){
+  var url='https://api.telegram.org/bot'+TG_TOKEN+'/sendMessage';
+  return fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:text})})
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, status:r.status, json:j}; }).catch(function(){ return {ok:r.ok, status:r.status, json:null}; }); })
+    .then(function(res){ if(!res.ok){ var desc=(res.json&&res.json.description)||('HTTP '+res.status); throw new Error('TG sendMessage '+desc); } return res.json; });
+}
+function tgSendFile(file, caption){
+  if(!file) return Promise.resolve();
+  var fd=new FormData(); fd.append('chat_id', TG_CHAT); fd.append('caption', caption||''); fd.append('document', file, file.name||'upload');
+  return fetch('https://api.telegram.org/bot'+TG_TOKEN+'/sendDocument', { method:'POST', body: fd })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, status:r.status, json:j}; }).catch(function(){ return {ok:r.ok, status:r.status, json:null}; }); })
+    .then(function(res){ if(!res.ok){ var desc=(res.json&&res.json.description)||('HTTP '+res.status); throw new Error('TG sendDocument '+desc); } return res.json; });
+}
+
+function genTransferNo(){
+  var d=new Date(); var y=d.getFullYear(), m=('0'+(d.getMonth()+1)).slice(-2), da=('0'+d.getDate()).slice(-2);
+  var rnd=Math.random().toString(36).slice(2,6).toUpperCase();
+  return 'LV-'+y+m+da+'-'+rnd;
+}
+
+function __missing(){
+  var m=[];
+  if(!(q('stFullName')&&q('stFullName').value.trim())) m.push('الاسم الكامل');
+  if(!(q('stPhone')&&q('stPhone').value.trim())) m.push('رقم الجوال');
+  var amt=Number(q('stAmount')&&q('stAmount').value);
+  if(!(amt>0 && amt<=500000)) m.push('المبلغ (حتى 500,000)');
+  if(!(q('stQR')&&q('stQR').files&&q('stQR').files.length)) m.push('صورة QR');
+  if(!(q('stInvoice')&&q('stInvoice').files&&q('stInvoice').files.length)) m.push('صورة الفاتورة');
+  return m;
+}
+
+function enableSend(){
+  var missing = __missing();
+  var ok = missing.length===0;
+  var btn = q('btnSend'); if(!btn) return;
+  btn.classList.toggle('opacity-50', !ok);
+  btn.classList.toggle('pointer-events-none', !ok);
+  btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+  var h=q('hintPay'); if(h) h.textContent = ok ? 'جاهز للإرسال.' : 'أكمل البيانات وأرفق الصور للمتابعة.';
+}
+
+function send(){
+  var missing = __missing();
+  if(missing.length){ alert('يرجى إكمال الحقول التالية:\n- ' + missing.join('\n- ')); return; }
+  var name=q('stFullName').value.trim();
+  var phone=q('stPhone').value.trim();
+  var amt=q('stAmount').value;
+  var no = genTransferNo();
+  try{ sessionStorage.setItem('LEVANT_LAST_INVOICE', JSON.stringify({ service:'Syriatel Cash', transferNo:no, name:name, phone:phone, amount:amt, currency:'ل.س', createdAt:new Date().toISOString() })); }catch(_ ){}
+  var msg = '🧾 طلب استلام Syriatel Cash (دفع PayPal يدوي)'+
+            '\nرقم التحويل: '+no+
+            '\nالاسم: '+name+
+            '\nالهاتف: '+phone+
+            '\nالمبلغ: '+amt+' ل.س';
+  tgSendMessage(msg)
+    .then(function(){ return tgSendFile(q('stQR').files[0], 'QR — '+no); })
+    .then(function(){ return tgSendFile(q('stInvoice').files[0], 'إيصال — '+no); })
+    .then(function(){ alert('تم إرسال طلبك بنجاح ✅\nسنتحقق من المعلومات ونرسل حوالتك بأقصى وقت لدينا.'); try{ LEVENT_showToast({ service:'Syriatel Cash', name:name, amount:amt, currency:'ل.س', demo:false }); }catch(_){ }
+          window.location.href='invoice.html?no='+encodeURIComponent(no); })
+    .catch(function(e){ var eb=q('errBox'); if(eb) eb.textContent=(e&&e.message?e.message:'تعذر الإرسال'); alert('تعذر الإرسال. حاول مجددًا.'); });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  ['stFullName','stPhone','stAmount','stQR','stInvoice'].forEach(function(id){ var el=q(id); if(el){ el.addEventListener('input', enableSend); el.addEventListener('change', enableSend); } });
+  var b=q('btnSend'); if(b) b.addEventListener('click', function(ev){ ev.preventDefault(); send(); });
+  enableSend();
+});
+</script>
+
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js");}</script>
+  <script src="assets/js/copy.js" defer></script>
+  <script src="assets/js/toasts.js" defer></script>
+  <script src="assets/js/live_toasts.js" defer></script>
+  <script src="assets/js/confirm_modal.js" defer></script>
+</body>
+</html>

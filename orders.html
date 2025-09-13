@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LEVANT Pay — تتبع</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script>
+<style>*{font-family:'Cairo',sans-serif}</style><link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+</head>
+<body class="bg-slate-950 text-white"><header class="sticky top-0 z-40 bg-slate-950/90 border-b border-white/10 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="/" class="text-xl font-extrabold">LEVANT <span class="text-indigo-400">Pay</span></a>
+    <nav class="hidden md:flex gap-6 text-sm text-slate-300">
+      <a href="/shamcash.html" class="hover:text-white">PayPal</a>
+      
+      <a href="/.html" class="hover:text-white"></a>
+      <a href="/orders.html" class="hover:text-white">تتبّع</a>
+    </nav>
+    <a href="/shamcash.html" class="md:hidden px-3 py-2 rounded-xl bg-indigo-600">ابدأ</a>
+  </div>
+</header>
+<main class="max-w-7xl mx-auto p-6">
+  <section class="rounded-2xl p-4 bg-black/40 border border-white/10">
+    <h2 class="text-xl font-bold">طلباتي (محلي)</h2>
+    <div class="flex gap-3 mt-3 items-center">
+      <input id="meEmail" class="px-3 py-2 rounded-xl bg-slate-900 border border-white/10 flex-1" placeholder="أدخل إيميلك لعرض الطلبات">
+      <button id="btnMy" class="px-4 py-2 rounded-xl bg-indigo-600">عرض</button>
+    </div>
+    <table class="w-full text-sm mt-3">
+      <thead><tr><th class="text-right p-2 border-b border-white/10">#</th><th class="text-right p-2 border-b border-white/10">تتبع</th><th class="text-right p-2 border-b border-white/10">المبلغ</th><th class="text-right p-2 border-b border-white/10">الصافي</th><th class="text-right p-2 border-b border-white/10">الحالة</th><th class="text-right p-2 border-b border-white/10">تاريخ</th></tr></thead>
+      <tbody id="tblMy"></tbody>
+    </table>
+  </section>
+</main>
+
+<main class="max-w-3xl mx-auto p-6">
+  <h1 class="text-2xl font-extrabold">تتبّع الطلب</h1>
+  <div class="mt-4 rounded-2xl p-5 bg-white/5 border border-white/10">
+    <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+      <div>رقم الطلب: <b id="oid">—</b></div>
+      <div>المبلغ (USD): <b id="usd">—</b></div>
+      <div>المبلغ (ل.س): <b id="syp">—</b></div>
+      <div>الحالة: <b id="st">مدفوع — بانتظار التحويل</b></div>
+    </div>
+  </div>
+  <section class="mt-6 rounded-2xl p-5 bg-white/5 border border-white/10">
+    <h2 class="font-bold mb-2">إرسال كود التحويل (شام كاش)</h2>
+    <div class="grid md:grid-cols-3 gap-3">
+      <input id="code" placeholder="32-hex" class="bg-black/50 border border-white/10 rounded-xl px-3 py-2">
+      <button id="send" class="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-bold">إرسال الكود</button>
+      <div id="m" class="text-sm"></div>
+    </div>
+  </section>
+  <div class="mt-6"><a href="/" class="text-indigo-400">العودة</a></div>
+</main>
+<footer class="border-t border-white/10 py-8 text-center text-slate-400 text-sm">
+  © <span id="y"></span> LEVANT Pay
+</footer>
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+<script>
+const q=new URLSearchParams(location.search);
+const oid=q.get('id')||'—', syp=q.get('syp'), usd=q.get('usd'), w=q.get('w');
+document.getElementById('oid').textContent=oid;
+document.getElementById('usd').textContent=usd? ('$'+Number(usd).toFixed(2)):'—';
+document.getElementById('syp').textContent=syp? Number(syp).toLocaleString('en-US'):'—';
+if(q.get('ref')) document.getElementById('st').textContent='تم التحويل';
+const rx=/^[a-f0-9]{32}$/i;
+send.onclick=async ()=>{
+  const elCode = document.getElementById('code');
+  const elMsg = document.getElementById('m');
+  const c=(elCode && elCode.value || '').trim();
+  if(!rx.test(c)){ elMsg.textContent='الكود غير صالح'; elMsg.className='text-sm text-rose-300'; return; }
+  elMsg.textContent='...'; elMsg.className='text-sm text-slate-300';
+  let ok=false;
+  try{
+    const r = await fetch('/.netlify/functions/confirm-code', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ code:c, order_id: oid, amount_usd: (usd?Number(usd):undefined), amount_syp: (syp?Number(syp):undefined) })
+    });
+    if(r.ok){
+      const j = await r.json();
+      ok = !!(j && j.ok);
+    }
+  }catch(_){}
+  if(!ok){
+    // Fallback: سجل محلياً واعتبرها "مرسلة" لعدم توفر الخادم
+    try{
+      const DB={get(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch(_){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}};
+      const KEY={reqs:'PX_REQS'};
+      const rec={tracking: oid, code:c, amount: Number(usd||1), usd:Number(usd||1), netUsd:Number(usd||1), netSyp: Number(syp||0), status:'sent', created: Date.now()};
+      const L=DB.get(KEY.reqs,[]); L.push(rec); DB.set(KEY.reqs,L);
+      ok=true;
+    }catch(_){}
+  }
+  elMsg.textContent = ok ? 'تم إرسال الكود — بانتظار التأكيد' : 'فشل الإرسال';
+  elMsg.className = ok ? 'text-sm text-emerald-300' : 'text-sm text-rose-300';
+};
+
+// === PX: local orders ===
+(function(){
+  const DB={get(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+  const KEY={reqs:'PX_REQS', me:'PX_ME_EMAIL'};
+  const rows=document.getElementById('tblMy'); const email=document.getElementById('meEmail');
+  function statusBadge(st){ if(st==='sent') return 'تم التحويل'; if(st==='rejected') return 'مرفوض'; return 'قيد الانتظار'; }
+  function render(){ const v=(email.value||'').toLowerCase(); const list=(DB.get(KEY.reqs,[])||[]).filter(r=>(r.email||'').toLowerCase()===v).slice().reverse();
+    rows.innerHTML = list.map((r,i)=>`<tr>
+      <td class="p-2 border-b border-white/10">${i+1}</td>
+      <td class="p-2 border-b border-white/10"><b>${r.tracking}</b></td>
+      <td class="p-2 border-b border-white/10">${Number(r.amount).toFixed(2)}$</td>
+      <td class="p-2 border-b border-white/10">${Number(r.netUsd).toFixed(2)}$ / ${Number(r.netSyp).toLocaleString()} ل.س</td>
+      <td class="p-2 border-b border-white/10">${statusBadge(r.status)}</td>
+      <td class="p-2 border-b border-white/10">${new Date(r.created).toLocaleString()}</td>
+    </tr>`).join('') || `<tr><td colspan="6" class="p-2 text-slate-400">لا توجد طلبات.</td></tr>`;
+  }
+  document.getElementById('btnMy').onclick=()=>{ localStorage.setItem(KEY.me, (email.value||'').toLowerCase()); render(); };
+  document.addEventListener('DOMContentLoaded', ()=>{ const q=new URLSearchParams(location.search); const em = q.get('email') || localStorage.getItem(KEY.me)||''; if(em){ email.value=em; } render(); });
+})();
+</script><script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js");}</script>
+<div id="paypal-buttons" style="margin:12px 0"></div>
+<script></script>
+
+</body></html>

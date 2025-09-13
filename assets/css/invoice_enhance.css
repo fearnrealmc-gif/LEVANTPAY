@@ -1,0 +1,10 @@
+
+.lev-inv-summary{margin:16px auto;max-width:900px;padding:12px 14px;border:1px solid #cbd5e1;border-radius:12px;background:#fff;color:#111}
+.lev-inv-summary .lev-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed #e5e7eb}
+.lev-inv-summary .lev-row:last-child{border-bottom:0}
+.lev-inv-summary .lev-sub{color:#374151;font-size:12px;margin-top:6px}
+@media print{
+  body{background:#fff !important;color:#000 !important}
+  .lev-inv-summary{border-color:#000}
+  .no-print{display:none !important}
+}

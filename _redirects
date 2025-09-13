@@ -1,0 +1,9 @@
+/ /index.html 200
+/paypal /paypal.html 200
+/bank /bank.html 200
+/ /.html 200
+/orders /orders.html 200
+/admin /admin/login.html 200
+/api/* /.netlify/functions/api/:splat 200
+/paypal.html   /shamcash.html   301!
+/paypal        /shamcash.html   301!

@@ -1,0 +1,11 @@
+
+.lev-live-toasts{position:fixed;right:12px;bottom:24px;width:340px;max-width:calc(100vw - 24px);z-index:99999;pointer-events:none}
+.lev-toast{display:flex;gap:10px;align-items:flex-start;background:#0b132b;border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:10px 12px;margin-top:10px;box-shadow:0 18px 40px rgba(0,0,0,.45);opacity:0;transform:translateY(12px);animation:lev_in .35s ease-out forwards}
+.lev-toast.hide{animation:lev_out .35s ease-in forwards}
+.lev-ic{width:28px;height:28px;border-radius:8px;flex:0 0 28px;display:flex;align-items:center;justify-content:center;color:#04130d;font-weight:900}
+.lev-txt{color:#e5e7eb;font-size:14px;line-height:1.4}
+.lev-sub{color:#9aa7b2;font-size:12px;margin-top:2px}
+.lev-syriatel{background:#ef4444;border-color:#ef4444}
+.lev-sham{background:#10b981;border-color:#10b981}
+@keyframes lev_in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lev_out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(8px)}}

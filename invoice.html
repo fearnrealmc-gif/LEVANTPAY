@@ -1,0 +1,91 @@
+
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>فاتورة — LEVENT Pay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    *{font-family:'Cairo',ui-sans-serif,system-ui}
+    @media print { .no-print{display:none} .page{box-shadow:none} }
+    .page{ background:white; color:#0f172a; max-width: 840px; margin: 20px auto; }
+    .brand{ background:linear-gradient(90deg,#4f46e5,#7c3aed); color:white; }
+    .badge{ background:#eef2ff; color:#3730a3; }
+    .box{ border:1px solid #e5e7eb; border-radius:16px; }
+  </style>
+  <link rel="stylesheet" href="assets/css/anim_lite.css">
+  <link rel="stylesheet" href="assets/css/invoice_enhance.css">
+</head>
+<body class="bg-slate-100">
+  <div class="page box p-6 sm:p-8 bg-white">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-extrabold">فاتورة</h1>
+        <p id="status" class="text-sm text-slate-500 mt-1">تم إرسال طلبك بنجاح — سنتحقق من المعلومات ونرسل حوالتك بأقصى وقت لدينا.</p>
+      </div>
+      <div class="text-right">
+        <div class="brand rounded-xl px-4 py-2 font-extrabold">LEVENT <span class="opacity-90">Pay</span></div>
+        <div class="text-xs text-slate-500 mt-2">سوريا — حمص • واتساب: +963 954 524 542 • بايبال: hassnhms91@gmail.com</div>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4 mt-6">
+      <div class="box p-4">
+        <div class="text-sm text-slate-500">اسم العميل</div>
+        <div id="invName" class="font-semibold text-lg">—</div>
+      </div>
+      <div class="box p-4">
+        <div class="text-sm text-slate-500">رقم التحويل</div>
+        <div id="invNo" class="font-mono font-bold">—</div>
+      </div>
+      <div class="box p-4">
+        <div class="text-sm text-slate-500">الخدمة</div>
+        <div id="invService" class="font-semibold">—</div>
+      </div>
+      <div class="box p-4">
+        <div class="text-sm text-slate-500">المبلغ</div>
+        <div id="invAmount" class="font-semibold">—</div>
+      </div>
+      <div class="box p-4">
+        <div class="text-sm text-slate-500">رقم الهاتف</div>
+        <div id="invPhone" class="font-semibold">—</div>
+      </div>
+      <div class="box p-4">
+        <div class="text-sm text-slate-500">التاريخ</div>
+        <div id="invDate" class="font-semibold">—</div>
+      </div>
+    </div>
+
+    <div class="mt-6 box p-4">
+      <div class="text-sm text-slate-500">تفاصيل</div>
+      <ul class="list-disc pr-6 mt-2 text-sm text-slate-700" id="invDetails">
+        <li>تم استلام الطلب وسيتم التحقق من البيانات والمرفقات (QR + إيصال الدفع).</li>
+        <li>سيتم تنفيذ الحوالة بأقصى سرعة ممكنة وفق سياسة العمل.</li>
+        <li>شركة: <b>LEVENT Pay</b> — الموقع: <b>سوريا، حمص</b>.</li>
+      </ul>
+    </div>
+
+    <div class="mt-6 flex items-center gap-3 no-print">
+      <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500">طباعة / حفظ PDF</button>
+      <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300">العودة للرئيسية</a>
+    </div>
+  </div>
+
+<script>
+(function(){
+  function q(id){ return document.getElementById(id); }
+  var data = null;
+  try{ data = JSON.parse(sessionStorage.getItem('LEVANT_LAST_INVOICE')||'null'); }catch(e){ data=null; }
+  var params = new URLSearchParams(location.search);
+  var no = params.get('no');
+  if(!data){ data = {transferNo:no||'—', name:'—', phone:'—', service:'—', amount:'—', currency:'', createdAt: new Date().toISOString()}; }
+  q('invNo').textContent = data.transferNo || no || '—';
+  q('invName').textContent = data.name || '—';
+  q('invPhone').textContent = data.phone || '—';
+  q('invService').textContent = data.service || '—';
+  q('invAmount').textContent = (data.amount? data.amount+' '+(data.currency||''): '—');
+  try{ q('invDate').textContent = new Date(data.createdAt).toLocaleString('ar-SY'); }catch(_){ q('invDate').textContent='—'; }
+})();
+</script>
+  <script src="assets/js/invoice_enhance.js" defer></script>
+</body></html>
